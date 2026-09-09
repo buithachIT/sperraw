@@ -36,4 +36,19 @@ export const ONBOARDING_STEPS = [
 
 export type OnboardingStepId = (typeof ONBOARDING_STEPS)[number]["id"];
 
-export const FORWARDING_ADDRESS = "nasbui.r@example.net";
+export function getForwardingAddress(input: {
+  email?: string | null;
+  slug?: string | null;
+}) {
+  const email = input.email?.trim();
+  if (email) {
+    return email;
+  }
+
+  const slug = input.slug?.trim();
+  if (slug) {
+    return `${slug}@inbound.sperraw.app`;
+  }
+
+  return "";
+}

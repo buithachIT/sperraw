@@ -103,7 +103,7 @@ Sau khi tạo workspace, các bước sau **không rollback** tenant. Quay lại
 
 ### 3.2 Set up email forwarding
 
-Địa chỉ forwarding cố định (mock): `nasbui.r@example.net`. Có nút copy.
+Địa chỉ forwarding lấy từ **email đã đăng ký** (fallback `{slug}@inbound.sperraw.app` nếu chưa có email). Có nút copy.
 
 Phải tick xác nhận đã có quyền email đó. Bỏ tick → không sang bước sau.
 

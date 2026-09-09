@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { FORWARDING_ADDRESS } from "@/consts/onboarding-step";
+import { getForwardingAddress } from "@/consts/onboarding-step";
 import { StepActions } from "@/features/onboarding/components/FormStep/StepActions";
 import { StepLayout } from "@/features/onboarding/components/FormStep/StepLayout";
 import { GuidanceCards } from "@/features/onboarding/components/FormStep/StepCulture/GuidanceCards";
@@ -17,9 +17,16 @@ import {
   cultureStepSchema,
   type CultureStepValues,
 } from "@/features/onboarding/components/FormStep/StepCulture/StepCultureSchema";
+import { useAuthStore } from "@/features/auth/store/use-auth-store";
 import { useOnboardingStore } from "@/features/onboarding/store/use-onboarding-store";
 
 export function StepCulture() {
+  const account = useAuthStore((state) => state.account);
+  const slug = useOnboardingStore((state) => state.slug);
+  const forwardingAddress = getForwardingAddress({
+    email: account?.email,
+    slug,
+  });
   const forwardingConfirmed = useOnboardingStore(
     (state) => state.forwardingConfirmed
   );
@@ -36,7 +43,10 @@ export function StepCulture() {
   });
 
   async function copyAddress() {
-    await navigator.clipboard.writeText(FORWARDING_ADDRESS);
+    if (!forwardingAddress) {
+      return;
+    }
+    await navigator.clipboard.writeText(forwardingAddress);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1600);
   }
@@ -56,7 +66,7 @@ export function StepCulture() {
         <div className="relative mt-3">
           <Input
             readOnly
-            value={FORWARDING_ADDRESS}
+            value={forwardingAddress}
             className="pr-12 font-medium"
             aria-label="Forwarding address"
           />
@@ -66,6 +76,7 @@ export function StepCulture() {
             size="icon"
             className="text-text-secondary absolute top-1/2 right-1.5 size-8 -translate-y-1/2"
             onClick={copyAddress}
+            disabled={!forwardingAddress}
             aria-label="Copy forwarding address"
           >
             {copied ? <Check /> : <Copy />}
