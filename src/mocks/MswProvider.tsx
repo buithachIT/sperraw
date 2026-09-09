@@ -2,27 +2,12 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 
+import { isMswEnabled } from "@/consts/msw";
 import { useAuthStore } from "@/features/auth/store/use-auth-store";
 import { useOnboardingStore } from "@/features/onboarding/store/use-onboarding-store";
 
-async function bootstrapSession() {
-  if (process.env.NODE_ENV === "development") {
-    const { startWorker } = await import("@/mocks/browser");
-    await startWorker();
-  }
-
-  await Promise.all([
-    useAuthStore.persist.rehydrate(),
-    useOnboardingStore.persist.rehydrate(),
-  ]);
-
+async function restoreMockDatabase() {
   const { account, workspace } = useAuthStore.getState();
-  useOnboardingStore.getState().syncFromWorkspace(workspace);
-
-  if (process.env.NODE_ENV !== "development") {
-    return;
-  }
-
   if (!account) {
     return;
   }
@@ -41,6 +26,25 @@ async function bootstrapSession() {
     name: workspace.name,
     slug: workspace.slug,
   });
+}
+
+async function bootstrapSession() {
+  if (isMswEnabled()) {
+    const { startWorker } = await import("@/mocks/browser");
+    await startWorker();
+  }
+
+  await Promise.all([
+    useAuthStore.persist.rehydrate(),
+    useOnboardingStore.persist.rehydrate(),
+  ]);
+
+  const { workspace } = useAuthStore.getState();
+  useOnboardingStore.getState().syncFromWorkspace(workspace);
+
+  if (isMswEnabled()) {
+    await restoreMockDatabase();
+  }
 }
 
 export function MswProvider({ children }: { children: ReactNode }) {

@@ -2,6 +2,14 @@
 
 Chưa có backend. Frontend gọi `fetch` cùng origin; **MSW** chặn trong browser (`src/mocks/`). Không có Next.js `src/app/api/**/route.ts`.
 
+Mock **bật mặc định** (kể cả production trên Vercel). Tắt bằng env lúc **build**:
+
+```bash
+NEXT_PUBLIC_ENABLE_MSW=false
+```
+
+`NEXT_PUBLIC_ENABLE_MSW=true` hoặc không set → bật. Flag phải là `NEXT_PUBLIC_` vì worker chạy trên client; đổi env trên Vercel rồi **redeploy**. `msw` nằm trong `dependencies` để production bundle có worker. File worker: `/mockServiceWorker.js`.
+
 Delay mỗi handler **~400ms**. Session mock là `currentSession` in-memory; khi reload tab, `MswProvider` hydrate Zustand rồi `restoreSession` / `restoreWorkspace`.
 
 Lỗi JSON: `{ "message": string }`. Client ném `ApiError` (`status` + `message`) — `src/lib/api/http.ts`.
@@ -154,5 +162,6 @@ Các bước sau **chỉ lưu Zustand** (`sperraw-onboarding`), không gọi ser
 | MSW auth | `src/mocks/auth-handlers.ts`, `src/mocks/auth-db.ts` |
 | MSW workspace | `src/mocks/handlers.ts`, `src/mocks/onboarding-db.ts` |
 | Start worker | `src/mocks/browser.ts`, `src/mocks/MswProvider.tsx` |
+| Flag bật/tắt | `src/consts/msw.ts` (`NEXT_PUBLIC_ENABLE_MSW`) |
 
 Luồng UI: [onboarding-flow.md](./onboarding-flow.md). Kiến trúc app: [frontend.md](./frontend.md).

@@ -1,4 +1,6 @@
-if (process.env.NODE_ENV === "development") {
+import { isMswEnabled } from "@/consts/msw";
+
+if (isMswEnabled()) {
   void import("@/mocks/browser").then(({ startWorker }) => {
     void startWorker();
   });

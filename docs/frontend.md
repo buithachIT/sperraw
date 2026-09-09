@@ -10,10 +10,10 @@ Luồng user: [onboarding-flow.md](./onboarding-flow.md). Bối cảnh sản ph�
 - Tailwind CSS 4
 - React Hook Form + Zod
 - Zustand (auth + wizard persist `sessionStorage`)
-- MSW 2 (mock `fetch` trên browser)
+- MSW 2 (mock `fetch` trên browser; bật/tắt bằng `NEXT_PUBLIC_ENABLE_MSW`)
 - shadcn/ui primitives (button, input, checkbox, sonner)
 
-MSW worker start trong `MswProvider` (đợi worker + hydrate session rồi mới render). `instrumentation-client.ts` start sớm để tránh `configure()` kép. Delay handler ~400ms.
+MSW worker start trong `MswProvider` khi `isMswEnabled()` (đợi worker + hydrate session rồi mới render). `instrumentation-client.ts` start sớm để tránh `configure()` kép. Delay handler ~400ms. Tắt mock: `NEXT_PUBLIC_ENABLE_MSW=false` rồi build lại. Chi tiết: [api.md](./api.md).
 
 ## Cấu trúc
 

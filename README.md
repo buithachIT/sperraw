@@ -20,6 +20,8 @@ npm run dev
 
 Mở [http://localhost:3000](http://localhost:3000).
 
+Mock API (MSW) **bật mặc định** cả `next dev` và production. Tắt: set `NEXT_PUBLIC_ENABLE_MSW=false` rồi build lại (xem `.env.example` và [docs/api.md](./docs/api.md)).
+
 ## Scripts
 
 ```bash

@@ -38,6 +38,9 @@ export async function startWorker() {
     .start({
       onUnhandledRequest: "bypass",
       quiet: true,
+      serviceWorker: {
+        url: "/mockServiceWorker.js",
+      },
     })
     .then(() => {
       mswWindow.__MSW_STARTED__ = true;
